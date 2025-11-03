@@ -1,6 +1,7 @@
-# Assignment 9: Database Integration with FastAPI, PostgreSQL, and pgAdmin
+# Assignment 9: SQL Database Operations with Docker Compose
 
 **Student:** Pruthul Patel  
+**Course:** IS 601  
 **GitHub Repository:** https://github.com/Pruthul15/assignment9  
 **Date:** October 9, 2025
 
@@ -8,7 +9,7 @@
 
 ## Overview
 
-This assignment demonstrates SQL database operations using Docker Compose with FastAPI, PostgreSQL, and pgAdmin.
+This assignment demonstrates SQL database operations using Docker Compose with FastAPI, PostgreSQL, and pgAdmin. The project showcases containerization (CLO9) and database integration with relational table design and CRUD operations (CLO11).
 
 ---
 
@@ -24,17 +25,18 @@ docker compose up
 - URL: http://localhost:5050
 - Login: admin@example.com / admin
 
-### Connect to Database
+### Database Connection
 - Host: `db`
 - Database: `fastapi_db`
 - Username/Password: `postgres` / `postgres`
 
-
 ---
 
-## SQL Operations Completed
+## Database Design
 
-### A. Create Tables
+### Tables Created
+
+**Users Table**
 ```sql
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
@@ -42,7 +44,10 @@ CREATE TABLE users (
     email VARCHAR(100) NOT NULL UNIQUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+```
 
+**Calculations Table**
+```sql
 CREATE TABLE calculations (
     id SERIAL PRIMARY KEY,
     operation VARCHAR(20) NOT NULL,
@@ -55,67 +60,106 @@ CREATE TABLE calculations (
 );
 ```
 
-### B. Insert Records
+---
+
+## SQL Operations Completed
+
+### A. Insert Records
 ```sql
-INSERT INTO users (username, email) VALUES ('john_doe', 'john@example.com');
-INSERT INTO users (username, email) VALUES ('jane_smith', 'jane@example.com');
+INSERT INTO users (username, email) VALUES ('alice', 'alice@example.com');
+INSERT INTO users (username, email) VALUES ('bob', 'bob@example.com');
 
 INSERT INTO calculations (operation, operand_a, operand_b, result, user_id)
 VALUES ('add', 2, 3, 5, 1);
-
+INSERT INTO calculations (operation, operand_a, operand_b, result, user_id)
+VALUES ('divide', 10, 2, 5, 1);
 INSERT INTO calculations (operation, operand_a, operand_b, result, user_id)
 VALUES ('multiply', 4, 5, 20, 2);
 ```
 
-### C. Query Data
+### B. Query Data
 ```sql
 SELECT * FROM users;
 SELECT * FROM calculations;
 
--- JOIN query
-SELECT users.username, calculations.operation, calculations.result
-FROM calculations
-JOIN users ON calculations.user_id = users.id;
+SELECT u.username, c.operation, c.operand_a, c.operand_b, c.result
+FROM calculations c
+JOIN users u ON c.user_id = u.id;
 ```
 
-### D. Update Record
+### C. Update Record
 ```sql
 UPDATE calculations SET result = 6 WHERE id = 1;
 ```
 
-### E. Delete Record
+### D. Delete Record
 ```sql
 DELETE FROM calculations WHERE id = 2;
 ```
 
 ---
 
-## Screenshots Included
+## Key Results
 
-1. Docker Compose running in terminal
-2. pgAdmin tables view (users and calculations tables)
-3. JOIN query results showing users and their calculations
+**One-to-Many Relationship Demonstrated:**
+- alice: 2 calculations (add, divide)
+- bob: 1 calculation (multiply)
+
+**JOIN Query Output:**
+| username | operation | operand_a | operand_b | result |
+|----------|-----------|-----------|-----------|--------|
+| alice | add | 2 | 3 | 5 |
+| alice | divide | 10 | 2 | 5 |
+| bob | multiply | 4 | 5 | 20 |
 
 ---
 
-## What I Learned
+## Learning Outcomes
 
-- Set up multi-container applications with Docker Compose
-- Created tables with foreign key relationships
-- Performed CRUD operations (Create, Read, Update, Delete)
-- Used JOIN queries to combine data from multiple tables
-- Understood one-to-many relationships between users and calculations
+- ✅ Set up multi-container applications with Docker Compose
+- ✅ Created tables with foreign key relationships
+- ✅ Performed CRUD operations (Create, Read, Update, Delete)
+- ✅ Used JOIN queries to combine data from multiple tables
+- ✅ Understood one-to-many relationships between users and calculations
+- ✅ Implemented referential integrity with ON DELETE CASCADE
 
 ---
 
 ## Challenges & Solutions
 
-**Challenge:** Foreign key constraint error when inserting calculations before users  
-**Solution:** Ensured users were inserted before calculations
+**Challenge 1:** Foreign key constraint error when inserting calculations before users  
+**Solution:** Ensured users were inserted before calculations to satisfy foreign key constraint
 
-**Challenge:** Connected to wrong database initially  
-**Solution:** Verified database name in docker-compose.yml and used `fastapi_db`
+**Challenge 2:** Connected to wrong database initially  
+**Solution:** Verified database name in docker-compose.yml and used correct `fastapi_db`
 
 ---
 
-**All CI/CD checks passing** | **Repository:** https://github.com/Pruthul15/assignment9
+## Project Structure
+
+```
+assignment9/
+├── docker-compose.yml
+├── Dockerfile
+├── main.py
+├── requirements.txt
+├── .github/workflows/
+├── app/
+├── templates/
+└── README.md
+```
+
+---
+
+## CI/CD Status
+
+✅ All tests passing  
+✅ Docker verification passed  
+✅ Security scan completed
+
+**Repository:** https://github.com/Pruthul15/assignment9
+
+---
+
+**Author:** Pruthul Patel  
+**Course:** IS 601
